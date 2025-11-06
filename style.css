@@ -1,0 +1,59 @@
+/* 기본 스타일 및 스크롤 허용 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a14;
+  color: white;
+  font-family: sans-serif;
+}
+
+/* p5.js 캔버스를 배경에 고정 */
+/* canvas는 이제 일반 블록 요소처럼 동작합니다. */
+canvas { display: block; }
+
+/* 스크롤되는 콘텐츠의 메인 컨테이너 */
+main {
+  /* position: relative; 와 z-index: 1; 은 더 이상 필요하지 않습니다. */
+  width: 100%;
+}
+
+/* 각 섹션의 기본 스타일 */
+.container {
+  min-height: 100vh; /* 각 섹션이 최소 화면 높이만큼 차지하도록 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* p5.js 캔버스가 들어갈 컨테이너의 패딩을 제거합니다. */
+#canvas-container {
+  padding: 0;
+  /* PC 버전에서 캔버스의 최대 너비를 2560px로 제한하고 중앙 정렬합니다. */
+  max-width: 3860px;
+  margin: 0 auto;
+  /* 캔버스의 높이를 화면 전체 높이에서 400px만큼 줄이되, */
+  height: 600px;
+}
+
+/* 섹션 제목 스타일 */
+.container h1, .container h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+/* 섹션 본문 텍스트 스타일 */
+.container p {
+  max-width: 600px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.container img {
+  margin: 20px 0;
+  border-radius: 8px;
+  max-width: 100%;
+}
