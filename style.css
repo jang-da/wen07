@@ -56,3 +56,17 @@ main {
   padding: 20px;
   box-sizing: border-box;
 }
+
+/* About 섹션 이미지 스타일 */
+.about-images {
+  display: flex;
+  gap: 20px; /* 이미지 사이 간격 */
+  margin-bottom: 20px; /* 이미지와 아래 텍스트 사이 간격 */
+}
+
+.about-images img {
+  max-width: 300px; /* 이미지 최대 너비 */
+  height: auto;
+  border: 2px solid #fff; /* 흰색 테두리 */
+}
+}

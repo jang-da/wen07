@@ -81,7 +81,7 @@ function initializeParticles() {
     // --- 가로 모드: 기존 로직 유지 ---
     const scale = min((width * 0.8) / img.width, (height * 0.8) / img.height);
     const scaledWidth = img.width * scale;
-    const stepSize = 28; // 가로 모드 파티클 밀도 (값을 키우면 파티클 감소)
+    const stepSize = 20; // 가로 모드 파티클 밀도 (값을 키우면 파티클 감소)
 
     const startX = (width - scaledWidth) / 2;
     const startY = (height - img.height * scale) / 2;
