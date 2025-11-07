@@ -32,6 +32,11 @@ function setup() {
 
   // 로드된 이미지를 기반으로 파티클을 초기화합니다.
   initializeParticles();
+
+  // 2초(2000ms)마다 자동 파동을 2번 생성합니다.
+  for (let i = 0; i < 2; i++) {
+    setInterval(createAutoRipple, 2000 + i * 500); // 각 파동이 약간 다른 시간에 시작하도록 지연시간을 줌
+  }
 }
 
 // 이미지의 픽셀을 분석하여 파티클을 생성하는 함수
@@ -156,6 +161,24 @@ function mousePressed() {
   });
 }
 
+// 자동 파동을 생성하는 함수
+function createAutoRipple() {
+  // 성능 저하를 막기 위해 최대 파동 개수를 10개로 제한합니다.
+  if (ripples.length > 10) {
+    ripples.shift(); // 가장 오래된 파동을 제거합니다.
+  }
+
+  // 캔버스 내의 임의의 위치에 새로운 파동 객체를 생성하여 배열에 추가합니다.
+  ripples.push({
+    x: random(width),      // 캔버스 너비 내의 랜덤 x좌표
+    y: random(height),     // 캔버스 높이 내의 랜덤 y좌표
+    radius: 0,
+    speed: random(2, 5),   // 자동 파동은 약간 느린 속도로 설정
+    rippleWidth: 20
+  });
+}
+
+
 // 파티클 하나하나를 정의하는 클래스
 class Particle {
   // 생성자: 파티클이 생성될 때 초기 위치(home)를 설정합니다.
@@ -194,6 +217,23 @@ class Particle {
     let homeForce = p5.Vector.sub(this.home, this.pos);
     homeForce.mult(0.05); // 복귀하는 힘의 세기
     this.applyForce(homeForce);
+
+    // --- 3. 자연스러운 물결 효과 ---
+    // Perlin noise를 사용하여 더 자연스럽고 유기적인 움직임을 만듭니다.
+    // 각 파티클의 위치와 시간(frameCount)을 기반으로 노이즈 값을 생성하여
+    // 부드럽게 변화하는 벡터 필드(흐름)를 만듭니다.
+    let noiseScale = 0.005; // 노이즈의 스케일 (값이 작을수록 부드러운 패턴)
+    let noiseStrength = 0.1; // 노이즈가 미치는 힘의 강도
+    let timeScale = 0.005; // 시간의 흐름에 따른 변화 속도
+
+    // 3D 노이즈를 사용하여 x, y, time을 기반으로 각도를 계산합니다.
+    // noise() 결과는 0~1이므로, TWO_PI를 곱해 0~360도 범위의 각도로 변환합니다.
+    let angle = noise(this.pos.x * noiseScale, this.pos.y * noiseScale, frameCount * timeScale) * TWO_PI;
+
+    // 계산된 각도로부터 힘 벡터를 생성하고 적용합니다.
+    let noiseForce = p5.Vector.fromAngle(angle);
+    noiseForce.setMag(noiseStrength);
+    this.applyForce(noiseForce);
 
     // 물리 법칙 적용
     this.vel.add(this.acc);
