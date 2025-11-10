@@ -4,16 +4,28 @@ let imgMobile;  // 모바일용 이미지
 let particles = [];
 let ripples = []; // 마우스 클릭 시 생성될 파동을 저장할 배열
 
+// --- 포스터 파티클 효과를 위한 전역 변수 추가 ---
+let posterImg;
+let posterParticles = [];
+let isPosterExploded = false;
+// ---
+
 // setup() 전에 실행되어 이미지 등 미디어 파일을 미리 로드합니다.
 function preload() {
   // 이미지 로딩 성공/실패를 확인하기 위해 콜백 함수를 추가합니다.
-  imgDesktop = loadImage('mainimg/logo6.png', 
-    () => console.log('Desktop image loaded successfully.'), 
+  imgDesktop = loadImage('mainimg/logo6.png',
+    () => console.log('Desktop image loaded successfully.'),
     () => console.error('Failed to load desktop image. Check path: mainimg/logo6.png')
   );
-  imgMobile = loadImage('logo5.png', 
+  imgMobile = loadImage('logo5.png',
     () => console.log('Mobile image loaded successfully.'),
     () => console.error('Failed to load mobile image. Check path: logo5.png')
+  );
+
+  // 포스터 이미지 로드
+  posterImg = loadImage('about/poster.png',
+    () => console.log('Poster image loaded successfully.'),
+    () => console.error('Failed to load poster image. Check path: about/poster.png')
   );
 }
 
@@ -37,6 +49,7 @@ function setup() {
   for (let i = 0; i < 2; i++) {
     setInterval(createAutoRipple, 2000 + i * 500); // 각 파동이 약간 다른 시간에 시작하도록 지연시간을 줌
   }
+
 }
 
 // 이미지의 픽셀을 분석하여 파티클을 생성하는 함수
@@ -123,6 +136,22 @@ function draw() {
     p.update(); // 파티클 위치 업데이트
     p.show();
   }
+
+  // --- 포스터 파티클 효과 처리 로직 추가 ---
+  if (isPosterExploded) {
+    for (let i = posterParticles.length - 1; i >= 0; i--) {
+      posterParticles[i].update();
+      posterParticles[i].display();
+      if (posterParticles[i].isDead()) {
+        posterParticles.splice(i, 1);
+      }
+    }
+    // 모든 파티클이 사라지면 상태 초기화 (다시 클릭해서 폭발시킬 수 있도록)
+    if (posterParticles.length === 0) {
+      isPosterExploded = false;
+      // posterImage.style.opacity = 1; // 이미지를 다시 보이게 하려면 이 줄의 주석을 해제하세요.
+    }
+  }
 }
 
 // 브라우저 창 크기가 변경될 때마다 실행되는 함수
@@ -178,6 +207,74 @@ function createAutoRipple() {
   });
 }
 
+// --- 포스터 파티클 효과를 위한 함수 및 클래스 추가 ---
+
+// 포스터 파티클 클래스
+class PosterParticle {
+  constructor(x, y, col) {
+    this.pos = createVector(x, y);
+    // 폭발 효과를 위해 무작위 방향으로 초기 속도 설정
+    this.vel = p5.Vector.random2D().mult(random(1, 5));
+    this.acc = createVector(0, 0.05); // 중력 효과
+    this.color = col;
+    this.lifespan = 255; // 파티클 수명
+  }
+
+  update() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.lifespan -= 1.5;
+  }
+
+  display() {
+    noStroke();
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.lifespan);
+    ellipse(this.pos.x, this.pos.y, 4);
+  }
+
+  isDead() {
+    return this.lifespan < 0;
+  }
+}
+
+function explodePoster() {
+  // 이미 폭발 중이거나 이미지가 로드되지 않았으면 실행하지 않음
+  if (isPosterExploded || !posterImg) return;
+
+  // index.html의 posterImage 요소를 다시 참조합니다.
+  const posterElement = document.getElementById('poster-image');
+  if (!posterElement) return;
+
+  // 이미지의 화면상 위치와 크기 가져오기
+  const rect = posterElement.getBoundingClientRect();
+  const imgX = rect.left;
+  const imgY = rect.top;
+  const imgWidth = rect.width;
+  const imgHeight = rect.height;
+
+  // 이미지 숨기기
+  posterElement.style.opacity = 0;
+  isPosterExploded = true;
+  posterParticles = []; // 파티클 배열 초기화
+
+  posterImg.loadPixels();
+
+  // 이미지의 특정 간격마다 픽셀을 샘플링하여 파티클 생성
+  const step = 10; // 숫자가 작을수록 파티클이 많아짐
+  for (let y = 0; y < posterImg.height; y += step) {
+    for (let x = 0; x < posterImg.width; x += step) {
+      const index = (x + y * posterImg.width) * 4;
+      const a = posterImg.pixels[index + 3]; // Alpha 값
+
+      if (a > 128) { // 투명하지 않은 픽셀만 파티클로 만들기
+        const particleX = map(x, 0, posterImg.width, imgX, imgX + imgWidth);
+        const particleY = map(y, 0, posterImg.height, imgY, imgY + imgHeight);
+        const c = posterImg.get(x, y); // 해당 픽셀의 색상 가져오기
+        posterParticles.push(new PosterParticle(particleX, particleY, c));
+      }
+    }
+  }
+}
 
 // 파티클 하나하나를 정의하는 클래스
 class Particle {
