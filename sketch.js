@@ -8,7 +8,6 @@ let ripples = []; // 마우스 클릭 시 생성될 파동을 저장할 배열
 let posterImg;
 let posterParticles = [];
 let isPosterExploded = false;
-// ---
 
 // setup() 전에 실행되어 이미지 등 미디어 파일을 미리 로드합니다.
 function preload() {
@@ -27,6 +26,7 @@ function preload() {
     () => console.log('Poster image loaded successfully.'),
     () => console.error('Failed to load poster image. Check path: about/poster.png')
   );
+
 }
 
 // p5.js 스케치가 처음 시작될 때 한 번 실행됩니다.
@@ -49,7 +49,6 @@ function setup() {
   for (let i = 0; i < 2; i++) {
     setInterval(createAutoRipple, 2000 + i * 500); // 각 파동이 약간 다른 시간에 시작하도록 지연시간을 줌
   }
-
 }
 
 // 이미지의 픽셀을 분석하여 파티클을 생성하는 함수
@@ -97,7 +96,7 @@ function initializeParticles() {
     }
   } else {
     // --- 가로 모드: 기존 로직 유지 ---
-    const scale = min((width * 0.8) / img.width, (height * 0.8) / img.height);
+    const scale = min((width * 0.9) / img.width, (height * 0.9) / img.height);
     const scaledWidth = img.width * scale;
     const stepSize = 20; // 가로 모드 파티클 밀도 (값을 키우면 파티클 감소)
 
@@ -119,7 +118,8 @@ function initializeParticles() {
 // 1초에 약 60번 반복 실행되는 애니메이션 루프
 function draw() {
   // 매 프레임마다 배경을 어둡게 칠해 잔상을 만듭니다. (0~255 사이)
-  background(10, 10, 20, 100);
+  background(0, 0, 0, 100); // 배경을 검정색으로 변경
+
 
   // 모든 파동을 업데이트합니다.
   for (let i = ripples.length - 1; i >= 0; i--) {
@@ -162,8 +162,9 @@ function windowResized() {
     resizeCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
   }
 
-  // 파티클 위치를 새 캔버스 크기에 맞게 다시 계산합니다.
+  // 파티클 위치를 새 캔버스 크기에 맞게 다시 계산합니다. fill(150, 200, 255);
   initializeParticles();
+
 }
 
 // 마우스를 클릭할 때마다 실행되는 함수
@@ -202,7 +203,7 @@ function createAutoRipple() {
     x: random(width),      // 캔버스 너비 내의 랜덤 x좌표
     y: random(height),     // 캔버스 높이 내의 랜덤 y좌표
     radius: 0,
-    speed: random(2, 5),   // 자동 파동은 약간 느린 속도로 설정
+    speed: random(5, 10),   // 자동 파동은 약간 느린 속도로 설정
     rippleWidth: 20
   });
 }
@@ -369,7 +370,7 @@ class Particle {
       }
     }
 
-    fill(150, 200, 255); // 파티클 색상 (연한 하늘색)
+    fill(168, 213, 226); // 파티클 색상을 요청하신 RGB 값으로 변경
     noStroke();
     textSize(size); // 계산된 크기 적용
     // 계산된 흔들림 값을 더하여 문자를 그립니다.
