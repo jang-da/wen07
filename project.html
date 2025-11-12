@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE. 프로필</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="gnb.css">
+    <style>
+        :root {
+            --c-white: #FFFFFF;
+            --c-light-gray: #E4E7EC;
+            --c-pale-blue: #BCD7DE;
+            --c-orange-red: #FF4A28;
+            --c-dark-cocoa: #573722;
+            --c-black: #000000;
+            --c-dark-gray-2: #333333;
+            --c-text-primary: #4A4A4A;
+            --c-text-secondary: #8B8B8B;
+            --f-primary: 'Noto Sans KR', sans-serif;
+            --f-code: 'Source Code Pro', monospace;
+            --f-display: 'DotGothic16', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { 
+            scroll-behavior: smooth; 
+            height: 100%;
+        }
+        ::selection { background: var(--c-orange-red); color: var(--c-white); }
+        
+        body {
+            font-family: var(--f-primary);
+            background: var(--c-black);
+            color: #A8D5E2;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px; /* gnb height */
+            
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Site Header */
+
+        /* 메인 컨텐츠 래퍼 (추가) */
+        .main-content-wrapper {
+            flex-grow: 1; /* 이 부분이 푸터를 하단으로 밀어냅니다 */
+        }
+
+        /* Container */
+        .container { 
+            max-width: 1800px; 
+            margin: 0 auto; 
+            padding: 0 40px; 
+        }
+
+        /* Narrower container only for profile section */
+        .container.profile-container {
+            max-width: 1500px;
+        }
+
+        /* Filter Navigation */
+        .filter-section {
+            background-color: var(--c-black);
+            padding: 25px 0;
+            border-bottom: 1px solid var(--c-dark-gray-2);
+            position: sticky;
+            top: 70px; /* Adjusted to sit flush under the header */
+            z-index: 900;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            font-family: var(--f-primary); /* 메뉴바와 동일한 폰트로 변경 */
+            text-decoration: none;
+            color: var(--c-text-secondary);
+            font-size: 1.8rem; /* 폰트 변경에 맞춰 크기 조정 */
+            font-weight: 500; /* 폰트 두께 추가 */
+            padding: 8px 16px;
+            border-radius: 0;
+            outline: none;
+            border: none;
+            background: none;
+            cursor: pointer;
+            letter-spacing: 0.05rem; /* 자간 조정 */
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .filter-item:hover { 
+            color: var(--c-dark-cocoa);
+        }
+
+        .filter-item.active { 
+            background-color: var(--c-orange-red);
+            color: var(--c-white); 
+            font-weight: 400;
+        }
+        
+        .filter-item.active:hover {
+             background-color: #E63D1F;
+             color: var(--c-white);
+        }
+
+        /* Profile Section */
+        .profile-section { 
+            padding: 100px 0 120px; 
+            background: var(--c-black);
+            position: relative;
+        }
+
+        /* Center vertical timeline line (disabled per request) */
+        .profile-section::before { display: none; }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 80px 66px; /* 상하/좌우 마진을 추가로 증가 */
+            position: relative;
+        }
+
+        .profile-card {
+            background: #1a1a1a;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid var(--c-dark-gray-2);
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .profile-card:hover::before { 
+            border-color: var(--c-orange-red);
+        }
+
+        .profile-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: var(--c-light-gray); /* 플레이스홀더 배경 색상 유지 */
+            position: relative;
+            display: flex; /* 이미지 없을 때 중앙 정렬을 위해 추가 */
+            align-items: center; /* 이미지 없을 때 중앙 정렬을 위해 추가 */
+            justify-content: center; /* 이미지 없을 때 중앙 정렬을 위해 추가 */
+        }
+
+        /* Connector from card to center line */
+        /* Disable horizontal connectors */
+        .profile-card::after { display: none; }
+
+        /* Timeline node at connection point */
+        /* Hide timeline nodes when center line is hidden */
+        .timeline-node { display: none; }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .profile-card:hover .profile-image {
+            transform: scale(1.05);
+        }
+
+        /* .profile-image-placeholder 스타일은 더 이상 필요 없으므로 제거했습니다. */
+
+        .profile-content { 
+            padding: 32px 28px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-name { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #A8D5E2;
+            letter-spacing: 0.02rem;
+        }
+
+        .profile-major { 
+            font-weight: 400; 
+            color: var(--c-text-secondary); 
+            font-size: 0.95rem;
+            font-family: var(--f-code);
+            letter-spacing: 0.05rem;
+        }
+
+        .profile-portfolio-title {
+            font-family: var(--f-code); 
+            color: var(--c-text-secondary); 
+            text-decoration: none; 
+            font-size: 0.85rem; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            letter-spacing: 0.03rem;
+            /* 이전 이메일 링크와 유사한 스타일을 유지하되, hover 효과는 제거 */
+        }
+
+        /* 이 클래스는 더 이상 사용되지 않지만, 만약을 위해 남겨둡니다. */
+        /* .profile-contact-link {
+            
+        } */
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 0;
+            font-family: var(--f-code);
+            color: var(--c-text-secondary);
+            font-size: 1.2rem;
+            letter-spacing: 0.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--c-black);
+            color: #A8D5E2;
+            padding: 50px 0;
+            border-top: 1px solid var(--c-dark-gray-2);
+        }
+
+        footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        footer .footer-section h3 {
+            font-family: var(--f-code);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        footer .footer-section p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .profile-grid { 
+                grid-template-columns: repeat(3, 1fr);
+                gap: 66px 54px; /* 상하/좌우 마진을 추가로 증가 */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 61px; }
+            .site-header { padding: 15px 20px; }
+            .site-header .logo a { font-size: 1.3rem; }
+            .site-header nav a { font-size: 0.9rem; padding: 6px 12px; }
+            .container { padding: 0 20px; }
+            .filter-section { top: 61px; padding: 20px 0; }
+            .filter-item { font-size: 1rem; padding: 6px 12px; }
+            .profile-section { padding: 60px 0 80px; }
+            .profile-grid { 
+                grid-template-columns: 1fr; /* 1열로 변경 */
+                gap: 40px;
+            }
+            .profile-section::before { display: none; }
+            .profile-card::after { display: none; }
+            footer .footer-content { 
+                flex-direction: column; 
+                gap: 30px; 
+                text-align: center; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filter-item { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GNB가 삽입될 위치 -->
+    <div id="gnb-placeholder"></div>
+
+    <main class="main-content-wrapper">
+        <div class="filter-section">
+            <div class="container profile-container">
+                <nav id="filter-container" class="filter-nav"></nav>
+            </div>
+        </div>
+
+        <div class="container profile-container">
+            <section class="profile-section">
+                <div id="profile-grid" class="profile-grid"></div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>decoding</h3>
+                <p>세상의 본질을 꿰뚫는 시선</p>
+            </div>
+            <div class="footer-section" style="text-align: right;">
+                <h3>encoding</h3>
+                <p>시각의 언어로 해결책을 설계</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // GNB를 동적으로 로드하고 현재 페이지에 'active' 클래스를 추가하는 스크립트
+            fetch("gnb.html")
+              .then(response => response.text())
+              .then(data => {
+                document.getElementById("gnb-placeholder").innerHTML = data;
+                
+                // 현재 페이지 URL을 기반으로 활성 링크 설정
+                const currentPage = window.location.pathname.split("/").pop();
+                const navLinks = document.querySelectorAll(".gnb-right a");
+                navLinks.forEach(link => {
+                  if (link.getAttribute("href") === currentPage) {
+                    link.classList.add("active");
+                  }
+                });
+              });
+
+
+            const students = [
+                { name: '강민진', major: 'WEB', image: 'images/ex1.jpg', portfolioTitle: '인터랙티브 웹 포트폴리오' },
+                { name: '고영인', major: 'UI/UX', image: 'images/ex2.jpg', portfolioTitle: '모바일 뱅킹 앱 리디자인' },
+                { name: '고한별', major: 'GRAPHIC', image: 'images/ex3.jpg', portfolioTitle: '브랜드 아이덴티티 디자인' },
+                { name: '김혜민', major: 'WEB', image: 'images/ex4.jpg', portfolioTitle: 'E-커머스 웹사이트 구축' },
+                { name: '박성민', major: 'UI/UX', image: 'images/ex5.jpg', portfolioTitle: '여행 플래너 앱 디자인' },
+                { name: '박성욱', major: 'GRAPHIC', image: 'images/ex6.jpg', portfolioTitle: '페스티벌 포스터 디자인' },
+                { name: '박시은', major: 'WEB', portfolioTitle: '개인 블로그 플랫폼 개발' },
+                { name: '박소현', major: 'UI/UX', portfolioTitle: '스마트홈 제어 시스템' },
+                { name: '박송희', major: 'GRAPHIC', portfolioTitle: '앨범 커버 아트워크' },
+                { name: '서유정', major: 'WEB', portfolioTitle: '반응형 뉴스 포털' },
+                { name: '송예준', major: 'UI/UX', portfolioTitle: '소셜 미디어 앱 프로토타입' },
+                { name: '윤해주', major: 'GRAPHIC', portfolioTitle: '타이포그래피 프로젝트' },
+                { name: '이민준', major: 'WEB', portfolioTitle: '커뮤니티 웹사이트' },
+                { name: '이상훈', major: 'UI/UX', portfolioTitle: '음악 스트리밍 서비스' },
+                { name: '장서연', major: 'GRAPHIC', portfolioTitle: '패키지 디자인' },
+                { name: '장영웅', major: 'WEB', portfolioTitle: '포트폴리오 웹사이트' },
+                { name: '조예빈', major: 'UI/UX', portfolioTitle: '헬스케어 앱 디자인' },
+            ];
+            students.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+            
+            const profileGrid = document.getElementById('profile-grid');
+            const profileSection = document.querySelector('.profile-section');
+            const filterContainer = document.getElementById('filter-container');
+            
+            // 초성 필터링 관련 상수 및 함수 제거
+            // const CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+            // function getFirstConsonant(text) { ... }
+
+            // 필터 그룹을 카테고리 기반으로 변경
+            const filterGroups = [
+                { display: 'All', category: 'All' },
+                { display: 'WEB', category: 'WEB' },
+                { display: 'UI/UX', category: 'UI/UX' },
+                { display: 'GRAPHIC', category: 'GRAPHIC' }
+            ];
+
+            filterGroups.forEach((filter) => {
+                const button = document.createElement('button');
+                button.classList.add('filter-item');
+                button.textContent = filter.display;
+                button.dataset.category = filter.category; // data-filter 대신 data-category 사용
+                if (filter.category === 'All') button.classList.add('active');
+                filterContainer.appendChild(button);
+            });
+            
+            function applyAlternatingSides() {
+                const cards = Array.from(profileGrid.querySelectorAll('.profile-card'));
+                cards.forEach((card, idx) => {
+                    card.classList.remove('left', 'right');
+                    card.classList.add(idx % 2 === 0 ? 'left' : 'right');
+                });
+            }
+
+            function clearTimelineNodes() {
+                profileSection.querySelectorAll('.timeline-node').forEach(n => n.remove());
+            }
+
+            function layoutConnectors() {
+                const cards = Array.from(profileGrid.querySelectorAll('.profile-card'));
+                if (!cards.length) return;
+
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    clearTimelineNodes();
+                    cards.forEach(card => card.style.setProperty('--connector-width', '0px'));
+                    return;
+                }
+
+                const centerX = window.innerWidth / 2;
+                const sectionTop = profileSection.getBoundingClientRect().top + window.scrollY;
+
+                clearTimelineNodes();
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const midY = rect.top + rect.height / 2 + window.scrollY;
+                    const nodeTop = midY - sectionTop;
+
+                    let width = 0;
+                    if (card.classList.contains('left')) {
+                        width = Math.max(0, centerX - rect.right);
+                    } else {
+                        width = Math.max(0, rect.left - centerX);
+                    }
+                    card.style.setProperty('--connector-width', `${Math.floor(width)}px`);
+
+                    if (width > 0) {
+                        const node = document.createElement('div');
+                        node.className = 'timeline-node';
+                        node.style.top = `${Math.floor(nodeTop)}px`;
+                        profileSection.appendChild(node);
+                    }
+                });
+            }
+
+            function renderProfiles(studentList) {
+                profileGrid.innerHTML = '';
+                
+                if (studentList.length === 0) {
+                    const message = document.createElement('div');
+                    message.classList.add('empty-state');
+                    message.textContent = 'No students found';
+                    profileGrid.appendChild(message);
+                    return;
+                }
+
+                studentList.forEach(student => {
+                    const card = document.createElement('div');
+                    card.classList.add('profile-card');
+                    card.innerHTML = `
+                        <div class="profile-image-wrapper">
+                            <img class="profile-image" src="${student.image || ''}" alt="${student.name} 프로필 이미지" onerror="this.style.display='none';">
+                            </div>
+                        <div class="profile-content">
+                            <h3 class="profile-name">${student.major}</h3>
+                            <p class="profile-portfolio-title">${student.portfolioTitle || ''}</p>
+                            <p class="profile-major">${student.name}</p> 
+                        </div>
+                    `;
+                    profileGrid.appendChild(card);
+                });
+
+                // Alternate sides and lay out connectors/nodes
+                applyAlternatingSides();
+                layoutConnectors();
+            }
+
+            filterContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-item')) {
+                    const selectedCategory = e.target.dataset.category; // data-filter 대신 data-category 사용
+                    document.querySelectorAll('.filter-item').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    let filteredStudents;
+                    if (selectedCategory === 'All') {
+                        filteredStudents = students;
+                    } else {
+                        filteredStudents = students.filter(student => {
+                            return student.major === selectedCategory; // 전공으로 필터링
+                        });
+                    }
+                    renderProfiles(filteredStudents);
+                }
+            });
+
+            renderProfiles(students);
+
+            // Recalculate on resize
+            window.addEventListener('resize', () => {
+                applyAlternatingSides();
+                layoutConnectors();
+            });
+        });
+    </script>
+</body>
+</html>

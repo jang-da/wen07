@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE. Artists</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="gnb.css">
+    <style>
+        :root {
+            --c-white: #FFFFFF;
+            --c-light-gray: #E4E7EC;
+            --c-sky-blue: #A8D5E2;
+            --c-orange-red: #FF4A28;
+            --c-black: #000000;
+            --c-dark-gray-1: #1A1A1A;
+            --c-dark-gray-2: #333333;
+            --c-text-primary-dark: var(--c-sky-blue);
+            --c-text-secondary-dark: rgba(168, 213, 226, 0.7);
+
+            --f-primary: 'Noto Sans KR', sans-serif;
+            --f-code: 'Source Code Pro', monospace;
+            --f-display: 'DotGothic16', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { 
+            scroll-behavior: smooth; 
+            height: 100%;
+            overflow-y: scroll;
+        }
+        ::selection { background: var(--c-orange-red); color: var(--c-white); }
+        
+        body {
+            font-family: var(--f-primary);
+            background: var(--c-black);
+            color: var(--c-text-primary-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 70px; /* GNB 높이에 맞게 조정 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .site-header {
+            position: fixed;
+        }
+
+        .main-content-wrapper {
+            flex-grow: 1;
+        }
+
+        .container { 
+            max-width: 1800px; 
+            margin: 0 auto; 
+            padding: 0 40px; 
+        }
+
+        .container.profile-container {
+            max-width: 1500px;
+        }
+
+        .filter-section {
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 25px 0;
+            border-bottom: 1px solid var(--c-dark-gray-2);
+            position: sticky;
+            top: 70px; /* GNB 높이에 맞게 조정 */
+            z-index: 900;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            font-family: var(--f-display);
+            color: var(--c-text-secondary-dark);
+            font-size: 2rem;
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-item:hover { 
+            color: var(--c-sky-blue);
+            background-color: var(--c-dark-gray-1);
+        }
+
+        .filter-item.active { 
+            background-color: var(--c-orange-red);
+            color: var(--c-white); 
+        }
+
+        .profile-section { 
+            padding: 100px 0 120px; 
+        }
+
+        .profile-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 60px 50px;
+        }
+
+        .profile-card {
+            flex: 0 0 calc(25% - 37.5px);
+            background: var(--c-dark-gray-1);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px solid var(--c-dark-gray-2);
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .profile-card:hover::before { 
+            border-color: var(--c-sky-blue);
+        }
+
+        .profile-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #222; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .profile-card:hover .profile-image {
+            transform: scale(1.05);
+        }
+
+        .profile-content { 
+            padding: 32px 28px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-name { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: var(--c-sky-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-contact { 
+            margin-top: auto;
+        }
+
+        .profile-contact a { 
+            font-family: var(--f-code); 
+            color: var(--c-text-secondary-dark); 
+            text-decoration: none; 
+            font-size: 0.85rem; 
+            transition: color 0.3s ease;
+            display: block;
+        }
+
+        .profile-contact a:hover { 
+            color: var(--c-orange-red);
+        }
+
+        .empty-state {
+            width: 100%;
+            text-align: center;
+            padding: 80px 0;
+            color: var(--c-text-secondary-dark);
+        }
+
+        footer {
+            background: var(--c-black);
+            color: var(--c-sky-blue);
+            padding: 50px 0;
+            border-top: 1px solid var(--c-dark-gray-2);
+        }
+
+        footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        footer .footer-section h3 {
+            font-family: var(--f-code);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        footer .footer-section p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-grid {
+                gap: 50px 40px;
+            }
+            .profile-card {
+                flex: 0 0 calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 67px; }
+            .site-header { padding: 15px 20px; }
+            .site-header .logo img { height: 28px; }
+            .site-header nav { gap: 4px; }
+            .site-header nav a { padding: 6px 12px; }
+            .site-header nav img { height: 18px; }
+            .container { padding: 0 20px; }
+            .filter-section { top: 67px; padding: 20px 0; }
+            .filter-item { font-size: 1.5rem; padding: 6px 12px; } /* 모바일 기본 필터 크기 */
+            
+            .profile-content { padding: 24px 20px; }
+            .profile-name { font-size: 1.25rem; }
+            
+            .profile-grid { 
+                gap: 40px 20px;
+            }
+            .profile-card {
+                flex: 0 0 calc(50% - 10px);
+            }
+            footer .footer-content { 
+                flex-direction: column; 
+                gap: 30px; 
+                text-align: center; 
+            }
+        }
+        
+        /* [핵심 수정] 누락되었던 480px 이하 반응형 필터 사이즈 조절 코드 복원 */
+        @media (max-width: 480px) {
+            .filter-item { 
+                font-size: 1.3rem; 
+                padding: 6px 10px; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- GNB가 삽입될 위치 -->
+    <div id="gnb-placeholder"></div>
+
+    <main class="main-content-wrapper">
+        <div class="filter-section">
+            <div class="container">
+                <nav id="filter-container" class="filter-nav"></nav>
+            </div>
+        </div>
+        <div class="container profile-container">
+            <section class="profile-section">
+                <div id="profile-grid" class="profile-grid"></div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>decoding</h3>
+                <p>세상의 본질을 꿰뚫는 시선</p>
+            </div>
+            <div class="footer-section" style="text-align: right;">
+                <h3>encoding</h3>
+                <p>시각의 언어로 해결책을 설계</p>
+            </div>
+        </div>
+    </footer>
+
+<!-- [유지] 원본의 정상 작동하는 JavaScript 필터 로직 -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // GNB를 동적으로 로드하고 현재 페이지에 'active' 클래스를 추가하는 스크립트
+        fetch("gnb.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("gnb-placeholder").innerHTML = data;
+            
+            // 현재 페이지 URL을 기반으로 활성 링크 설정
+            const currentPage = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll(".gnb-right a");
+            navLinks.forEach(link => {
+              if (link.getAttribute("href") === currentPage) {
+                link.classList.add("active");
+              }
+            });
+          });
+
+        const students = [
+             { name: '강민진', email: 'kang.mj@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '고영인', email: 'go.yi@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '고한별', email: 'go.hb@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '김혜민', email: 'kim.hm@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '박성민', email: 'park.sm@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '박성욱', email: 'park.sw@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '박시은', email: 'park.se@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '박소현', email: 'park.sh@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '박송희', email: 'park.sh2@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '서유정', email: 'seo.yj@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '송예준', email: 'song.yj@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '윤해주', email: 'yoon.hj@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '이민준', email: 'lee.mj@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '이상훈', email: 'lee.sh@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '장서연', email: 'jang.sy@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '장영웅', email: 'jang.yw@example.com', image: 'https://via.placeholder.com/400' },
+             { name: '조예빈', email: 'cho.ym@example.com', image: 'https://via.placeholder.com/400' },
+        ];
+        students.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+        
+        const profileGrid = document.getElementById('profile-grid');
+        const filterContainer = document.getElementById('filter-container');
+
+        const CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+        
+        function getFirstConsonant(text) {
+            const firstChar = text.charCodeAt(0);
+            if (firstChar < 0xAC00 || firstChar > 0xD7A3) return text[0];
+            const consonantIndex = Math.floor((firstChar - 0xAC00) / 588);
+            return CONSONANTS[consonantIndex];
+        }
+
+        const filterGroups = [
+            { display: 'All', chars: 'All' },
+            { display: 'ㄱ', chars: 'ㄱㄲ' },
+            { display: 'ㅂ', chars: 'ㅂㅃ' },
+            { display: 'ㅅ', chars: 'ㅅㅆ' },
+            { display: 'ㅇ', chars: 'ㅇ' },
+            { display: 'ㅈ', chars: 'ㅈㅉㅊ' }
+        ];
+
+        filterGroups.forEach((filter) => {
+            const button = document.createElement('button');
+            button.classList.add('filter-item');
+            button.textContent = filter.display;
+            button.dataset.filter = filter.chars;
+            if (filter.chars === 'All') button.classList.add('active');
+            filterContainer.appendChild(button);
+        });
+        
+        function renderProfiles(studentList) {
+            profileGrid.innerHTML = '';
+            
+            if (studentList.length === 0) {
+                const message = document.createElement('div');
+                message.classList.add('empty-state');
+                message.textContent = 'No artists found on this filter.';
+                profileGrid.appendChild(message);
+                return;
+            }
+
+            studentList.forEach(student => {
+                const card = document.createElement('div');
+                card.classList.add('profile-card');
+
+                const imageHtml = student.image 
+                    ? `<img class="profile-image" src="${student.image}" alt="${student.name} 프로필 이미지">`
+                    : ''; 
+
+                card.innerHTML = `
+                    <div class="profile-image-wrapper">
+                        ${imageHtml}
+                    </div>
+                    <div class="profile-content">
+                        <div class="profile-header">
+                            <h3 class="profile-name">${student.name}</h3>
+                        </div>
+                        <div class="profile-contact">
+                            <a href="mailto:${student.email}" title="${student.email}">${student.email}</a>
+                        </div>
+                    </div>
+                `;
+                profileGrid.appendChild(card);
+            });
+        }
+
+        filterContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-item')) {
+                const selectedFilterChars = e.target.dataset.filter;
+                document.querySelectorAll('.filter-item').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+
+                let filteredStudents;
+                if (selectedFilterChars === 'All') {
+                    filteredStudents = students;
+                } else {
+                    filteredStudents = students.filter(student => {
+                        const firstConsonant = getFirstConsonant(student.name);
+                        return selectedFilterChars.includes(firstConsonant);
+                    });
+                }
+                renderProfiles(filteredStudents);
+            }
+        });
+        
+        renderProfiles(students);
+    });
+</script>
+</body>
+</html>

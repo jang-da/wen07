@@ -9,50 +9,6 @@ body, html {
   font-family: sans-serif;
 }
 
-/* GNB(전역 내비게이션 바) 스타일 */
-.gnb {
-  position: fixed; /* 화면 상단에 고정 */
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between; /* 양쪽 끝으로 정렬 */
-  align-items: center;
-  padding: 10px 40px; /* 내부 여백 (상하 10px, 좌우 40px) */
-  padding: 10px 0; /* 상하 여백만 유지 */
-  background-color: rgba(10, 10, 20, 0.8); /* 반투명 배경 */
-  z-index: 1000; /* 다른 요소들 위에 오도록 설정 */
-  box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
-}
-
-/* GNB 내부 콘텐츠 컨테이너 */
-.gnb-inner {
-  width: 100%;
-  max-width: 1400px; /* 최대 너비 1400px */
-  margin: 0 auto; /* 중앙 정렬 */
-  padding: 0 40px; /* 좌우 여백 */
-  display: flex;
-  justify-content: space-between; /* 양쪽 끝으로 정렬 */
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.gnb .logo {
-  height: 50px; /* 로고 이미지 높이 50px로 설정 */
-  vertical-align: middle; /* 이미지가 수직 중앙에 오도록 */
-}
-
-.gnb-right a {
-  text-decoration: none;
-  margin-left: 30px; /* 메뉴 아이템 사이 간격 */
-}
-
-/* GNB 오른쪽 메뉴 아이콘 스타일 */
-.nav-icon {
-  height: 35px; /* 아이콘 높이 설정 (로고보다 작게) */
-  vertical-align: middle; /* 수직 중앙 정렬 */
-}
-
 /* 스크롤되는 메인 콘텐츠 영역 */
 main {
   position: relative;

@@ -7,6 +7,7 @@
     <!-- p5.js 라이브러리 임포트 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <!-- 외부 CSS 파일 연결 -->
+    <link rel="stylesheet" href="gnb.css">
     <link rel="stylesheet" href="style.css">
     <style>
       /* ABOUT 섹션 레이아웃 조정 */
@@ -31,20 +32,8 @@
     </style>
   </head>
   <body>
-    <!-- GNB(전역 내비게이션 바) -->
-    <header class="gnb">
-      <div class="gnb-inner">
-        <div class="gnb-left">
-          <a href="index.html"><img src="gnb/logo3.png" alt="Logo" class="logo"></a>
-        </div>
-        <nav class="gnb-right">
-          <a href="#project"><img src="gnb/projects.png" alt="Project" class="nav-icon"></a>
-          <a href="#artist"><img src="gnb/artist.png" alt="Artist" class="nav-icon"></a>
-        </nav>
-      </div>
-    </header>
-
-    <!-- p5.js 캔버스는 sketch.js에 의해 이 body에 자동으로 추가됩니다. -->
+    <!-- GNB가 삽입될 위치 -->
+    <div id="gnb-placeholder"></div>
 
     <!-- 스크롤되는 콘텐츠 영역 -->
     <main>
@@ -119,5 +108,24 @@
 
     <!-- 외부 JS 파일 연결 -->
     <script src="sketch.js"></script>
+    <script>
+      // GNB를 동적으로 로드하고 현재 페이지에 'active' 클래스를 추가하는 스크립트
+      document.addEventListener("DOMContentLoaded", function() {
+        fetch("gnb.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("gnb-placeholder").innerHTML = data;
+            
+            // 현재 페이지 URL을 기반으로 활성 링크 설정
+            const currentPage = window.location.pathname.split("/").pop();
+            const navLinks = document.querySelectorAll(".gnb-right a");
+            navLinks.forEach(link => {
+              if (link.getAttribute("href") === currentPage) {
+                link.classList.add("active");
+              }
+            });
+          });
+      });
+    </script>
   </body>
 </html>
