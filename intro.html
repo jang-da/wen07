@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- [수정됨] 타이틀 변경 -->
+    <title>GSAP 3단계 인트로</title>
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font (Inter) --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&display=swap" rel="stylesheet">
+    <!-- GSAP CDN --><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        /* Tailwind CSS를 보완하기 위한 기본 스타일 */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* [추가됨] 로딩 바 관련 스타일 복원 */
+        #loadingBar {
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      메인 컨테이너
+    --><div class="relative w-full h-screen overflow-hidden">
+        
+        <!-- 
+          상단 패널 (Z-index: 20) 
+          [수정됨] #textContainer가 밖으로 나감
+        -->
+        <div id="panelTop" class="absolute top-0 left-0 w-full h-1/2 bg-teal-500 z-20 overflow-hidden">
+            
+            <!-- [추가됨] 1단계 텍스트를 감싸는 div (절대 위치) -->
+            <div class="absolute top-0 left-0 p-10 md:p-16">
+                <!-- 1단계 텍스트 요소 -->
+                <span id="text1" class="block text-3xl md:text-5xl font-bold text-white mb-3">2025 졸업전시에</span>
+                <span id="text2" class="block text-3xl md:text-5xl font-bold text-white">당신을 초대합니다</span>
+            </div>
+
+            <!-- [제거됨] 2단계 텍스트 컨테이너 (밖으로 이동) -->
+        </div>
+
+        <!-- [수정됨] 2단계 텍스트 컨테이너 (z-40, 밖으로 이동) -->
+        <div id="textContainer" class="absolute top-0 left-0 w-full h-1/2 z-40 flex items-end justify-center pb-8 pointer-events-none">
+            <div class="flex items-center space-x-4 text-2xl font-bold">
+                <span id="codeText" class="text-white">CODE</span>
+                <span id="slashText" class="text-gray-200">/</span>
+                <span id="projectText" class="text-white">PROJECT</span>
+            </div>
+        </div>
+        
+        <!-- 
+          하단 패널 (Z-index: 20)
+          [수정됨] 로딩 퍼센트 텍스트 복원
+        -->
+        <div id="panelBottom" class="absolute bottom-0 left-0 w-full h-1/2 bg-teal-500 z-20 flex items-end justify-center pb-4">
+            <!-- [추가됨] 하단 퍼센트 텍스트 복원 -->
+            <div id="loadingPercentage" class="text-sm font-mono text-white/50">(0%)</div>
+        </div>
+
+        <!-- [추가됨] 로딩 바 컨테이너 복원 (Z-index: 30) -->
+        <div id="loadingContainer" class="absolute top-1/2 left-0 w-full z-30">
+            <div class="h-[1px] w-full bg-black/20"></div>
+            <div id="loadingBar" class="absolute top-0 left-0 h-[1px] w-full bg-white"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // DOM 콘텐츠가 모두 로드되면 스크립트 실행
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. 요소들의 초기 상태 설정
+            gsap.set(["#panelTop", "#panelBottom"], { yPercent: 0 });
+
+            // 1단계 텍스트 (왼쪽 상단)
+            gsap.set(["#text1", "#text2"], { opacity: 0, y: -20 });
+            
+            // 2단계 텍스트 (중앙)
+            // [수정] #textContainer가 밖에 있으므로 초기화
+            gsap.set(["#textContainer", "#codeText", "#slashText", "#projectText"], { opacity: 0 });
+            
+            // 로딩 UI (중앙)
+            gsap.set(["#loadingContainer", "#loadingPercentage"], { opacity: 0 });
+            gsap.set("#loadingBar", { scaleX: 0 });
+
+            // 텍스트 이동 거리를 동적으로 계산하기 위해 요소 참조
+            const panelTop = document.getElementById('panelTop'); // panelTop 참조 (계산용)
+            const codeText = document.getElementById('codeText');
+            const projectText = document.getElementById('projectText');
+            
+            // 2. GSAP 타임라인 생성
+            const tl = gsap.timeline();
+            
+            // 3. 타임라인에 애니메이션 추가
+            
+            // (1) 1단계: 왼쪽 상단 텍스트 나타나기
+            tl.to(["#text1", "#text2"], {
+                duration: 0.8,
+                opacity: 1,
+                y: 0,
+                ease: "power2.out",
+                stagger: 0.3
+            });
+
+            // (2) [주석 처리] 1단계 텍스트 숨기기 제거
+            /*
+            tl.to(["#text1", "#text2"], {
+                duration: 0.5,
+                opacity: 0,
+                ease: "power1.in"
+            }, "+=1.5"); // 1단계 텍스트가 나타난 후 1.5초 뒤
+            */
+
+            // (3) 2단계: 중앙 텍스트 및 로딩 UI 나타나기
+            // [수정] 1단계 텍스트가 사라지지 않으므로, 1.5초 대기 후 실행
+            tl.to(["#textContainer", "#loadingContainer", "#loadingPercentage"], {
+                opacity: 1,
+                duration: 0.8
+            }, "+=1.5").addLabel("step3start"); // 1단계 텍스트 나타난 후 1.5초 뒤, 레이블 추가
+
+            // (4) 2단계: 텍스트 좌우 이동
+            // [수정] step3start 레이블 기준으로 0.2초 뒤에 시작
+            tl.to(codeText, {
+                duration: 1,
+                x: () => {
+                    const panelWidth = panelTop.offsetWidth;
+                    const textWidth = codeText.offsetWidth;
+                    const padding = 64; 
+                    return -(panelWidth / 2 - textWidth / 2 - padding);
+                },
+                ease: "power3.inOut"
+            }, "step3start+=0.2"); // 2단계 UI가 나타나고 0.2초 뒤
+
+            tl.to(projectText, {
+                duration: 1,
+                x: () => {
+                    const panelWidth = panelTop.offsetWidth;
+                    const textWidth = projectText.offsetWidth;
+                    const padding = 64;
+                    return panelWidth / 2 - textWidth / 2 - padding;
+                },
+                ease: "power3.inOut"
+            }, "<"); // codeText와 동시에
+            
+            // (5) 2단계: 로딩 애니메이션 (숫자와 바)
+            const counter = { value: 0 };
+            tl.to(counter, {
+                value: 100,
+                duration: 1,
+                ease: 'power1.inOut',
+                onUpdate: () => {
+                    document.getElementById('loadingPercentage').textContent = `(${Math.round(counter.value)}%)`;
+                }
+            }, "<"); // 텍스트 이동과 동시에
+
+            tl.to("#loadingBar", {
+                scaleX: 1,
+                duration: 1,
+                ease: "power1.inOut"
+            }, "<").addLabel("loadingDone"); // 카운터와 동시에 시작, 완료 지점
+
+            // (6) 3단계: 로딩 UI 숨기기
+            tl.to(["#loadingContainer", "#loadingPercentage"], {
+                duration: 0.2,
+                opacity: 0,
+                ease: "power1.in",
+                onComplete: () => {
+                    gsap.set(["#loadingContainer", "#loadingPercentage"], { display: 'none' });
+                }
+            }, "loadingDone"); // 로딩 완료 시점
+
+            // (7) 4단계: 패널 열기
+            const lastAnimationStartTime = "loadingDone+=0.2"; // 로딩 UI 사라지고 0.2초 뒤
+
+            // [수정] #textContainer 애니메이션 복원 (panelTop과 함께 올라가도록)
+            tl.to("#textContainer", {
+                duration: 1.2,
+                yPercent: -100,
+                ease: "power3.inOut"
+            }, lastAnimationStartTime);
+
+            // 1단계 텍스트가 panelTop 안에 있으므로 함께 올라감
+            tl.to("#panelTop", {
+                duration: 1.2,
+                yPercent: -100,
+                ease: "power3.inOut"
+            }, lastAnimationStartTime);
+
+            tl.to("#panelBottom", {
+                duration: 1.2,
+                yPercent: 100,
+                ease: "power3.inOut"
+            }, lastAnimationStartTime);
+        });
+    </script>
+
+</body>
+</html>
