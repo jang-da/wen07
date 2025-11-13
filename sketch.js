@@ -38,12 +38,18 @@ function setup() {
     return; // 'canvas-container'가 없으면 실행을 중단합니다.
   }
   // 컨테이너의 크기에 맞춰 캔버스를 생성합니다.
-  const canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+  // willReadFrequently: true 옵션을 추가하여 성능 경고를 해결합니다.
+  const canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight, {
+    willReadFrequently: true
+  });
   // 생성된 캔버스를 컨테이너의 자식으로 만듭니다.
   canvas.parent('canvas-container');
 
-  // 로드된 이미지를 기반으로 파티클을 초기화합니다.
-  initializeParticles();
+  // 캔버스 컨테이너가 화면에 보일 때만 파티클을 초기화합니다.
+  // (인트로 애니메이션 중에는 offsetWidth가 0이므로 실행되지 않습니다.)
+  if (canvasContainer.offsetWidth > 0) {
+    initializeParticles();
+  }
 
   // 2초(2000ms)마다 자동 파동을 2번 생성합니다.
   for (let i = 0; i < 2; i++) {
@@ -303,6 +309,11 @@ class Particle {
     let mouse = createVector(mouseX, mouseY);
     let d = this.pos.dist(mouse); // 마우스와의 거리
     
+    // [오류 수정] d가 0에 가까워져서 Infinity가 되는 것을 방지합니다.
+    if (d < 1) {
+      d = 1; // 최소 거리를 1로 설정
+    }
+
     if (d < 80) { // 마우스가 80px 반경 안에 들어오면
       // 마우스 반대 방향으로 밀어내는 힘을 계산합니다.
       let repelForce = p5.Vector.sub(this.pos, mouse);

@@ -1,122 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>p5.js Particle System</title>
+    <title>CODE. 졸업전시</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Font (Noto Sans KR) for Main Content -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for Intro -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <!-- p5.js 라이브러리 임포트 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <!-- 외부 CSS 파일 연결 -->
     <link rel="stylesheet" href="gnb.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-      /* ABOUT 섹션 레이아웃 조정 */
-      #about .about-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 50px; /* 이미지와 텍스트 사이 간격 */
-        width: 100%;
-      }
-
-      #about .about-images {
-        flex-basis: 40%; /* 이미지 컨테이너 너비 */
-      }
-
-      #about #poster-image {
-        width: 100%; /* 부모 컨테이너에 맞춰 크기 조정 */
-        max-width: 450px; /* 최대 너비 설정 */
-        height: auto;
-        transition: transform 0.1s ease; /* 부드러운 전환 효과 */
-      }
-    </style>
   </head>
   <body>
-    <!-- GNB가 삽입될 위치 -->
-    <div id="gnb-placeholder"></div>
+    <!-- Intro Animation Container -->
+    <div id="intro-container" class="relative w-full h-screen overflow-hidden">
+      <!-- Top Panel (Z-index: 20) -->
+      <div id="panelTop" class="absolute top-0 left-0 w-full h-1/2 bg-teal-500 z-20 overflow-hidden">
+        <!-- 1단계 텍스트를 감싸는 div (절대 위치) -->
+        <div class="absolute top-0 left-0 p-10 md:p-16">
+          <!-- 1단계 텍스트 요소 -->
+          <span id="text1" class="block text-3xl md:text-5xl font-bold text-white mb-3">2025 졸업전시에</span>
+          <span id="text2" class="block text-3xl md:text-5xl font-bold text-white">당신을 초대합니다</span>
+        </div>
+      </div>
 
-    <!-- 스크롤되는 콘텐츠 영역 -->
-    <main>
-      <!-- 각 섹션이 화면 전체를 차지하도록 하는 컨테이너 -->
-      <section class="container" id="canvas-container">
-        <!-- sketch.js가 이 안에 캔버스를 생성할 것입니다. -->
-      </section>
+      <!-- 2단계 텍스트 컨테이너 (z-40) -->
+      <div id="textContainer" class="absolute top-0 left-0 w-full h-1/2 z-40 flex items-end justify-center pb-8 pointer-events-none">
+        <div class="flex items-center space-x-4 text-2xl font-bold">
+          <span id="codeText" class="text-white">CODE</span>
+          <span id="slashText" class="text-gray-200">/</span>
+          <span id="projectText" class="text-white">PROJECT</span>
+        </div>
+      </div>
 
-      <section class="container" id="about">
-        <h2>ABOUT</h2>
-        <div class="about-content">
-          <div class="about-images">
-            <img src="about/poster.png" alt="Poster Image" id="poster-image">
+      <!-- Bottom Panel (Z-index: 20) -->
+      <div id="panelBottom" class="absolute bottom-0 left-0 w-full h-1/2 bg-teal-500 z-20 flex items-end justify-center pb-4">
+        <div id="loadingPercentage" class="text-sm font-mono text-white/50">(0%)</div>
+      </div>
+
+      <!-- 로딩 바 컨테이너 (Z-index: 30) -->
+      <div id="loadingContainer" class="absolute top-1/2 left-0 w-full z-30">
+        <div class="h-[1px] w-full bg-black/20"></div>
+        <div id="loadingBar" class="absolute top-0 left-0 h-[1px] w-full bg-white"></div>
+      </div>
+    </div>
+
+    <!-- Main Content (Initially hidden) -->
+    <div id="main-content" style="display: none;">
+      <!-- GNB가 삽입될 위치 -->
+      <div id="gnb-placeholder"></div>
+
+      <!-- 스크롤되는 콘텐츠 영역 -->
+      <main>
+        <!-- 각 섹션이 화면 전체를 차지하도록 하는 컨테이너 -->
+        <section class="container" id="canvas-container">
+          <!-- sketch.js가 이 안에 캔버스를 생성할 것입니다. -->
+        </section>
+
+        <section class="container" id="about">
+          <h2>ABOUT</h2>
+          <!-- GSAP 스크롤 애니메이션을 위한 구조 -->
+          <div class="animation-wrapper">
+            <div class="about-images-wrapper">
+              <img class="scroll-image" src="about/poster.png" alt="Poster Image">
+            </div>
+            <p class="fade-in-text about-text">이곳에 ABOUT 섹션에 대한 설명을 작성합니다. 이 프로젝트는 p5.js를 사용하여 만들어졌으며, 인터랙티브한 배경 애니메이션이 특징입니다. 사용자의 움직임과 상호작용하여 동적인 경험을 제공합니다.</p>
           </div>
-          <p>이곳에 ABOUT 섹션에 대한 설명을 작성합니다. 이 프로젝트는 p5.js를 사용하여 만들어졌으며, 인터랙티브한 배경 애니메이션이 특징입니다. 사용자의 움직임과 상호작용하여 동적인 경험을 제공합니다.</p>        
-        </div>
-      </section>
+        </section>
 
-      <section class="container" id="info">
-        <h2>INFO</h2>
-        <!-- INFO Content (from info.html) -->
-        <div id="info-details" class="info-list-container">
-            <!-- 졸업전시위원 -->
-            <div class="info-list-item">
-                <h3 class="info-title color-indigo">졸업전시위원</h3>
-                <ul class="info-member-list">
-                    <li>장영웅</li>
-                    <li>박소현</li>
-                    <li>박성민</li>
-                </ul>
-            </div>
+        <section class="container" id="info">
+          <h2>INFO</h2>
+          <!-- INFO Content (from info.html) -->
+          <div id="info-details" class="info-list-container">
+              <!-- 졸업전시위원 -->
+              <div class="info-list-item">
+                  <h3 class="info-title color-indigo">졸업전시위원</h3>
+                  <ul class="info-member-list">
+                      <li>장영웅</li>
+                      <li>박소현</li>
+                      <li>박성민</li>
+                  </ul>
+              </div>
 
-            <!-- 웹 명단 -->
-            <div class="info-list-item">
-                <h3 class="info-title color-teal">웹</h3>
-                <ul class="info-member-list">
-                    <li>김철수</li>
-                    <li>이영희</li>
-                </ul>
-            </div>
+              <!-- 웹 명단 -->
+              <div class="info-list-item">
+                  <h3 class="info-title color-teal">웹</h3>
+                  <ul class="info-member-list">
+                      <li>김철수</li>
+                      <li>이영희</li>
+                  </ul>
+              </div>
 
-            <!-- 영상 명단 -->
-            <div class="info-list-item">
-                <h3 class="info-title color-rose">영상</h3>
-                <ul class="info-member-list">
-                    <li>박지민</li>
-                    <li>최수영</li>
-                    <li>정국</li>
-                </ul>
-            </div>
+              <!-- 영상 명단 -->
+              <div class="info-list-item">
+                  <h3 class="info-title color-rose">영상</h3>
+                  <ul class="info-member-list">
+                      <li>박지민</li>
+                      <li>최수영</li>
+                      <li>정국</li>
+                  </ul>
+              </div>
 
-            <!-- 소형배너 명단 -->
-            <div class="info-list-item">
-                <h3 class="info-title color-amber">소형배너</h3>
-                <ul class="info-member-list">
-                    <li>이하나</li>
-                    <li>강동원</li>
-                </ul>
-            </div>
+              <!-- 소형배너 명단 -->
+              <div class="info-list-item">
+                  <h3 class="info-title color-amber">소형배너</h3>
+                  <ul class="info-member-list">
+                      <li>이하나</li>
+                      <li>강동원</li>
+                  </ul>
+              </div>
 
-            <!-- 대형배너 명단 -->
-            <div class="info-list-item">
-                <h3 class="info-title color-cyan">대형배너</h3>
-                <ul class="info-member-list">
-                    <li>유재석</li>
-                    <li>송지효</li>
-                </ul>
-            </div>
-        </div>
-      </section>
-    </main>
+              <!-- 대형배너 명단 -->
+              <div class="info-list-item">
+                  <h3 class="info-title color-cyan">대형배너</h3>
+                  <ul class="info-member-list">
+                      <li>유재석</li>
+                      <li>송지효</li>
+                  </ul>
+              </div>
+          </div>
+        </section>
+      </main>
+    </div>
 
     <!-- 외부 JS 파일 연결 -->
-
-  
+    <script src="intro.js"></script>
     <script src="sketch.js"></script>
 
     <script>
       // GNB를 동적으로 로드하고 현재 페이지에 'active' 클래스를 추가하는 스크립트
       document.addEventListener("DOMContentLoaded", function() {
+        // 페이지 로드 시 스크롤을 최상단으로 강제 이동
+        window.scrollTo(0, 0);
+
         fetch("gnb.html")
           .then(response => response.text())
           .then(data => {
@@ -130,19 +155,37 @@
                 link.classList.add("active");
               }
             });
-
-            // 스크롤 시 GNB에 'scrolled' 클래스 추가/제거
-            const gnb = document.querySelector('.gnb');
-            if (gnb) {
-              window.addEventListener('scroll', () => {
-                if (window.scrollY > 10) { // 10px 이상 스크롤되면
-                  gnb.classList.add('scrolled');
-                } else {
-                  gnb.classList.remove('scrolled');
-                }
-              });
-            }
           });
+
+        // ABOUT 섹션 GSAP 스크롤 애니메이션
+        // GSAP에 ScrollTrigger 플러그인 등록
+        gsap.registerPlugin(ScrollTrigger);
+
+        // GSAP 타임라인 생성
+        let tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".animation-wrapper", // 애니메이션 기준 요소
+                start: "top 75%", // 래퍼의 상단이 뷰포트 75% 지점에 닿을 때 시작
+                toggleActions: "play none none none" // 뷰에 들어올 때 한 번만 재생
+                // markers: true, // 디버깅용 마커 (필요시 주석 해제)
+            }
+        });
+
+        // 애니메이션 1: "왼쪽 선" -> "전체 이미지" (왼쪽에서 오른쪽으로)
+        // clip-path의 가로 값을 2%->100%로 변경
+        tl.to(".scroll-image", {
+            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            ease: "power1.in", // 요청하신 'ease in'
+            duration: 1 // 1초 동안 애니메이션 진행
+        });
+
+        // 애니메이션 2: 텍스트 페이드인 (추가)
+        // 이미지 애니메이션이 0.3초 진행된 시점에 시작
+        tl.to(".fade-in-text", {
+            opacity: 1,
+            ease: "power1.in",
+            duration: 0.7 // 0.3초부터 1초까지 (총 0.7초)
+        }, 0.3); // 타임라인의 0.3초 지점에서 시작
       });
     </script>
   </body>

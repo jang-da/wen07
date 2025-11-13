@@ -6,9 +6,15 @@ body, html {
   height: 100%; 
   background-color: #000000; /* 배경색을 검정색으로 변경 */
   color: #A8D5E2;
-  font-family: sans-serif;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  overflow: hidden; /* 인트로 중 스크롤 방지 */
 }
 
+/* 로딩 바 관련 스타일 */
+#loadingBar {
+  transform-origin: left;
+  transform: scaleX(0);
+}
 /* 스크롤되는 메인 콘텐츠 영역 */
 main {
   position: relative;
@@ -26,22 +32,54 @@ main {
   box-sizing: border-box;
 }
 
-/* About 섹션 이미지 스타일 */
-.about-images {
-  display: flex;
-  gap: 20px; /* 이미지 사이 간격 */
-  margin-bottom: 20px; /* 이미지와 아래 텍스트 사이 간격 */
+/* 각 섹션의 제목 (h2) 중앙 정렬 */
+.container h2 {
+  text-align: center; /* 텍스트 중앙 정렬 */
+  width: 100%; /* 부모 너비 전체를 차지하여 텍스트 정렬이 유효하도록 */
+  margin-bottom: 40px; /* 아래쪽 여백 추가 */
 }
 
-.about-images img {
-  max-width: 300px; /* 이미지 최대 너비 */
+/* About 섹션 애니메이션 래퍼 (기존 .about-content 대체) */
+.animation-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px; /* 이미지와 텍스트 사이 간격 */
+  width: 100%;
+  max-width: 1400px; /* 콘텐츠 최대 너비를 1400px로 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* About 섹션 이미지 래퍼 */
+.about-images-wrapper {
+  flex-basis: 40%; /* 이미지 컨테이너 너비 */
+  overflow: hidden; /* clip-path 애니메이션을 위해 필수 */
+}
+
+/* About 섹션 애니메이션 이미지 */
+.scroll-image {
+  width: 100%; /* 부모 컨테이너에 맞춰 크기 조정 */
+  max-width: 450px; /* 최대 너비 설정 */
   height: auto;
+  display: block; /* 이미지 하단 여백 제거 */
+  clip-path: polygon(0% 0%, 2% 0%, 2% 100%, 0% 100%); /* 초기 clip-path (왼쪽 2%만 보임) */
+}
+
+/* About 섹션 애니메이션 텍스트 */
+.fade-in-text {
+  opacity: 0; /* 초기 상태: 숨김 */
+  flex-basis: 50%; /* 텍스트 영역 너비 */
+  font-size: 1.1rem; /* 폰트 크기 증가 */
+  line-height: 1.8; /* 줄 간격 증가 */
+  color: rgba(255, 255, 255, 0.85); /* 텍스트 색상을 약간 밝게 */
+  padding-left: 20px; /* 이미지와의 간격 추가 */
 }
 
 /* --- New INFO Section Styles --- */
 .info-list-container {
   width: 100%;
-  max-width: 800px; /* 너비 조정 */
+  max-width: 1400px; /* 콘텐츠 최대 너비를 1400px로 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
   display: flex;
   flex-direction: column;
   gap: 2rem; /* 32px 간격 */
