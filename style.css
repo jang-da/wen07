@@ -6,10 +6,17 @@ body, html {
   height: 100%; 
   background-color: #000000; /* 배경색을 검정색으로 변경 */
   color: #A8D5E2;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-family: 'Source Code Pro', 'Noto Sans KR', sans-serif;
   overflow: hidden; /* 인트로 중 스크롤 방지 */
 }
 
+      /* 캔버스 컨테이너를 화면에 꽉 채우도록 스타일 추가 */
+      #canvas-container {
+        position: relative; /* 자식 요소의 위치 기준으로 사용될 수 있도록 설정 */
+        width: 100%;
+        height: 100vh; /* 뷰포트 높이의 100%를 차지하도록 설정 */
+        box-sizing: border-box; /* 패딩이 높이에 포함되도록 설정 */
+      }
 /* 로딩 바 관련 스타일 */
 #loadingBar {
   transform-origin: left;
@@ -23,8 +30,8 @@ main {
 
 /* 각 섹션 스타일 */
 .container {
-  height: 100vh; /* 각 섹션이 화면 전체 높이를 차지하도록 */
-  display: flex;
+  min-height: 1080px; /* 각 섹션의 최소 높이를 1080px로 설정 */
+  display: inline; /* [수정] Flexbox 레이아웃을 올바르게 적용 */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -39,10 +46,32 @@ main {
   margin-bottom: 40px; /* 아래쪽 여백 추가 */
 }
 
+/* ABOUT, INFO 섹션 제목 특별 스타일 */
+#about h2, #info h2 {
+  font-size: 100px; /* 폰트 크기를 100px로 설정 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  /* 부모(.container)의 좌측 padding(20px) + 100px = 뷰포트 좌측에서 120px */
+  padding-left: 100px; 
+}
+
+/* INFO 제목과 리스트 사이 간격 조정 */
+#info h2 {
+  margin-bottom: 110px;
+}
+
+/* INFO 섹션 컨테이너 특별 스타일 */
+#info.container {
+  padding-right: 0; /* 오른쪽 내부 여백 제거 */
+  align-items: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
+  /* 이전 스타일 제거, .container 기본 스타일 사용 */
+  /* align-items: center; 가 적용되어 수직 중앙 정렬됨 */
+}
+
 /* About 섹션 애니메이션 래퍼 (기존 .about-content 대체) */
 .animation-wrapper {
   display: flex;
   align-items: center;
+  
   justify-content: center;
   gap: 50px; /* 이미지와 텍스트 사이 간격 */
   width: 100%;
@@ -58,9 +87,8 @@ main {
 
 /* About 섹션 애니메이션 이미지 */
 .scroll-image {
-  width: 100%; /* 부모 컨테이너에 맞춰 크기 조정 */
-  max-width: 450px; /* 최대 너비 설정 */
-  height: auto;
+  width: 446px; /* 너비를 446px로 고정 */
+  height: 664px; /* 높이를 664px로 고정 */
   display: block; /* 이미지 하단 여백 제거 */
   clip-path: polygon(0% 0%, 2% 0%, 2% 100%, 0% 100%); /* 초기 clip-path (왼쪽 2%만 보임) */
 }
@@ -68,55 +96,112 @@ main {
 /* About 섹션 애니메이션 텍스트 */
 .fade-in-text {
   opacity: 0; /* 초기 상태: 숨김 */
-  flex-basis: 50%; /* 텍스트 영역 너비 */
-  font-size: 1.1rem; /* 폰트 크기 증가 */
-  line-height: 1.8; /* 줄 간격 증가 */
+  flex: 0 0 600px; /* 텍스트 영역 너비를 600px로 고정 */
+  display: flex;
+  flex-direction: column;
+  gap: 3rem; /* 내부 요소 간 간격 */
+  font-size: 22px; /* 폰트 크기를 22px로 수정 */
+  line-height: 1.6; /* 줄 간격을 160%로 수정 */
   color: rgba(255, 255, 255, 0.85); /* 텍스트 색상을 약간 밝게 */
-  padding-left: 20px; /* 이미지와의 간격 추가 */
+}
+
+/* 새로 추가된 오른쪽 텍스트 블록 스타일 */
+.about-extra-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem; /* Decoding/Encoding 그룹 사이 간격 */
+}
+
+.about-extra-text h3 {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 24px; /* 폰트 크기 24px로 수정 */
+  font-weight: 600;
+  color: #A8D5E2;
+}
+
+.about-extra-text p {
+  font-size: 44px; /* 폰트 크기 44px로 수정 */
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* "Encoding" 텍스트 블록을 오른쪽으로 정렬 */
+.about-extra-text div:last-child {
+  text-align: right;
+}
+
+/* --- [수정] INFO Section 2단 레이아웃 --- */
+.info-content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px; /* 전체 너비 제한 (ABOUT 섹션과 유사하게) */
+  gap: 20px; /* 이미지와 명단 사이 간격을 20px로 수정 */
+}
+
+.info-image-wrapper {
+  flex: 1; /* 남는 공간 차지 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 */
+}
+
+.info-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 컨테이너를 채우도록 */
+  display: block;
 }
 
 /* --- New INFO Section Styles --- */
 .info-list-container {
-  width: 100%;
-  max-width: 1400px; /* 콘텐츠 최대 너비를 1400px로 설정 */
-  margin: 0 auto; /* 중앙 정렬 */
+  width: 1000px; /* 너비를 1000px로 고정 */
+  /* margin: 0 auto; 제거하여 오른쪽 정렬이 가능하도록 함 */
+  flex: 1; /* 남는 공간 차지 */
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* 32px 간격 */
+  gap: 120px; /* 섹션 간 간격 */
+}
+
+.info-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* 제목과 명단 사이 간격을 60px로 설정 */
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 290px); /* 각 열의 너비를 290px로 고정 */
+  gap: 60px; /* 열 사이의 간격을 190px로 설정 */
 }
 
 .info-list-item {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 추가 */
-  padding-bottom: 1rem; /* 구분선과의 간격 */
+  flex-direction: column; /* 제목과 명단을 세로로 배치 */
+  gap: 60px; /* 제목과 명단 사이 간격을 60px로 설정 */
 }
 
 .info-title {
-  font-size: 1.5rem; /* 24px */
+  font-size: 26px; /* 폰트 크기를 26px로 수정 */
   font-weight: 600; /* semibold */
-}
-
-.info-member-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem; /* 8px 간격 */
-}
-
-.info-member-list li {
-  font-size: 1.125rem; /* 18px */
   color: #A8D5E2;
 }
 
+.info-member-list {
+  display: flex;
+  flex-direction: column; /* [수정] 세로 정렬로 변경 */
+  gap: 0.5rem; /* 이름 사이 간격 */
+}
+
+.info-member-list p {
+  font-size: 16px; /* 폰트 크기를 12px로 수정 */
+  color: rgba(168, 213, 226, 0.85); /* 이름 텍스트는 약간 연하게 */
+}
+
 /* Title Colors */
-.color-indigo { color: #A8D5E2; }
-.color-teal { color: #A8D5E2; }
-.color-rose { color: #A8D5E2; }
-.color-amber { color: #A8D5E2; }
-.color-cyan { color: #A8D5E2; }
+.info-title {
+  color: #A8D5E2; /* 모든 타이틀 색상 통일 */
 }

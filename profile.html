@@ -6,7 +6,7 @@
     <title>CODE. Artists</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="gnb.css">
     <style>
         :root {
@@ -21,15 +21,14 @@
             --c-text-secondary-dark: rgba(168, 213, 226, 0.7);
 
             --f-primary: 'Noto Sans KR', sans-serif;
-            --f-code: 'Source Code Pro', monospace;
-            --f-display: 'DotGothic16', sans-serif;
+            --f-code: 'Source Code Pro', 'Noto Sans KR', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { 
             scroll-behavior: smooth; 
             height: 100%;
-            overflow-y: scroll;
+            overflow-y: scroll; /* 스크롤바 항상 표시 */
         }
         ::selection { background: var(--c-orange-red); color: var(--c-white); }
         
@@ -83,7 +82,7 @@
         }
 
         .filter-item {
-            font-family: var(--f-display);
+            font-family: var(--f-code);
             color: var(--c-text-secondary-dark);
             font-size: 2rem;
             padding: 8px 16px;
@@ -182,7 +181,7 @@
         }
 
         .profile-contact a { 
-            font-family: var(--f-code); 
+            font-family: inherit; /* body 폰트 상속 */
             color: var(--c-text-secondary-dark); 
             text-decoration: none; 
             font-size: 0.85rem; 
@@ -217,7 +216,7 @@
         }
 
         footer .footer-section h3 {
-            font-family: var(--f-code);
+            font-family: inherit; /* body 폰트 상속 */
             font-size: 1.1rem;
             margin-bottom: 10px;
             font-weight: 400;

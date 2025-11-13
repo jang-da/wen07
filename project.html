@@ -6,7 +6,7 @@
     <title>CODE. 프로필</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="gnb.css">
     <style>
         :root {
@@ -20,8 +20,7 @@
             --c-text-primary: #4A4A4A;
             --c-text-secondary: #8B8B8B;
             --f-primary: 'Noto Sans KR', sans-serif;
-            --f-code: 'Source Code Pro', monospace;
-            --f-display: 'DotGothic16', sans-serif;
+            --f-code: 'Source Code Pro', 'Noto Sans KR', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,7 +31,7 @@
         ::selection { background: var(--c-orange-red); color: var(--c-white); }
         
         body {
-            font-family: var(--f-primary);
+            font-family: var(--f-code);
             background: var(--c-black);
             color: #A8D5E2;
             line-height: 1.6;
@@ -83,7 +82,7 @@
         }
 
         .filter-item {
-            font-family: var(--f-primary); /* 메뉴바와 동일한 폰트로 변경 */
+            font-family: var(--f-code); /* 메뉴바와 동일한 폰트로 변경 */
             text-decoration: none;
             color: var(--c-text-secondary);
             font-size: 1.8rem; /* 폰트 변경에 맞춰 크기 조정 */
@@ -216,7 +215,7 @@
             font-weight: 400; 
             color: var(--c-text-secondary); 
             font-size: 0.95rem;
-            font-family: var(--f-code);
+            font-family: var(--f-code); /* Source Code Pro 적용 */
             letter-spacing: 0.05rem;
         }
 
