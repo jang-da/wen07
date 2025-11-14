@@ -7,7 +7,6 @@ body, html {
   background-color: #000000; /* 배경색을 검정색으로 변경 */
   color: #A8D5E2;
   font-family: 'Source Code Pro', 'Noto Sans KR', sans-serif;
-  overflow: hidden; /* 인트로 중 스크롤 방지 */
 }
 
       /* 캔버스 컨테이너를 화면에 꽉 채우도록 스타일 추가 */
@@ -30,13 +29,13 @@ main {
 
 /* 각 섹션 스타일 */
 .container {
-  min-height: 1080px; /* 각 섹션의 최소 높이를 1080px로 설정 */
-  display: inline; /* [수정] Flexbox 레이아웃을 올바르게 적용 */
+  min-height: 100vh; /* 각 섹션의 높이를 화면 높이에 맞춥니다. */
+  display: flex; /* Flexbox 레이아웃을 사용하여 내부 콘텐츠를 정렬합니다. */
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  margin: 0 auto; /* 가로 중앙 정렬 */
 }
 
 /* 각 섹션의 제목 (h2) 중앙 정렬 */
@@ -52,6 +51,7 @@ main {
   text-align: left; /* 텍스트 왼쪽 정렬 */
   /* 부모(.container)의 좌측 padding(20px) + 100px = 뷰포트 좌측에서 120px */
   padding-left: 100px; 
+  font-size: 100px; /* 폰트 크기를 100px로 설정 */ 
 }
 
 /* INFO 제목과 리스트 사이 간격 조정 */
@@ -59,24 +59,22 @@ main {
   margin-bottom: 110px;
 }
 
-/* INFO 섹션 컨테이너 특별 스타일 */
-#info.container {
-  padding-right: 0; /* 오른쪽 내부 여백 제거 */
-  align-items: flex-end; /* 자식 요소를 오른쪽으로 정렬 */
-  /* 이전 스타일 제거, .container 기본 스타일 사용 */
-  /* align-items: center; 가 적용되어 수직 중앙 정렬됨 */
-}
+
 
 /* About 섹션 애니메이션 래퍼 (기존 .about-content 대체) */
 .animation-wrapper {
   display: flex;
   align-items: center;
-  
   justify-content: center;
   gap: 50px; /* 이미지와 텍스트 사이 간격 */
   width: 100%;
   max-width: 1400px; /* 콘텐츠 최대 너비를 1400px로 설정 */
   margin: 0 auto; /* 중앙 정렬 */
+  /* [수정] 펼침 효과를 위한 초기 스타일: 얇은 세로선 */
+  height: 30vh; /* 시작 높이 */
+  width: 4px; /* 시작 너비 */
+  background-color: #A8D5E2; /* 선 색상 */
+  overflow: hidden; /* 내부 콘텐츠 숨기기 */
 }
 
 /* About 섹션 이미지 래퍼 */
@@ -90,12 +88,13 @@ main {
   width: 446px; /* 너비를 446px로 고정 */
   height: 664px; /* 높이를 664px로 고정 */
   display: block; /* 이미지 하단 여백 제거 */
-  clip-path: polygon(0% 0%, 2% 0%, 2% 100%, 0% 100%); /* 초기 clip-path (왼쪽 2%만 보임) */
+  /* [수정] 펼쳐진 후 나타나도록 초기 투명도 설정 */
+  opacity: 0; 
 }
 
 /* About 섹션 애니메이션 텍스트 */
 .fade-in-text {
-  opacity: 0; /* 초기 상태: 숨김 */
+  opacity: 0; /* [수정] 펼쳐진 후 나타나도록 초기 투명도 설정 */
   flex: 0 0 600px; /* 텍스트 영역 너비를 600px로 고정 */
   display: flex;
   flex-direction: column;
@@ -140,28 +139,16 @@ main {
   gap: 20px; /* 이미지와 명단 사이 간격을 20px로 수정 */
 }
 
-.info-image-wrapper {
-  flex: 1; /* 남는 공간 차지 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 */
-}
 
-.info-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 이미지가 컨테이너를 채우도록 */
-  display: block;
-}
 
 /* --- New INFO Section Styles --- */
 .info-list-container {
-  width: 1000px; /* 너비를 1000px로 고정 */
-  /* margin: 0 auto; 제거하여 오른쪽 정렬이 가능하도록 함 */
-  flex: 1; /* 남는 공간 차지 */
+  width: 1400px; /* 너비를 1400px로 수정 */
+  margin-left: auto; /* 중앙 정렬 */
+  margin-right: auto; /* 중앙 정렬 */
   display: flex;
   flex-direction: column;
+  align-items: center; /* 내부 콘텐츠(섹션)들을 중앙 정렬 */
   gap: 120px; /* 섹션 간 간격 */
 }
 
@@ -174,8 +161,9 @@ main {
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(4, 290px); /* 각 열의 너비를 290px로 고정 */
-  gap: 60px; /* 열 사이의 간격을 190px로 설정 */
+  grid-template-columns: repeat(4, 1fr); /* 4개의 열이 공간을 균등하게 차지하도록 수정 */
+  justify-content: center; /* 그리드 자체를 중앙에 배치 */
+  gap: 20px; /* 열 사이의 간격을 190px로 설정 */
 }
 
 .info-list-item {

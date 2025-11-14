@@ -102,51 +102,49 @@
         <section class="container" id="info">
           <h2>INFO</h2>
           <!-- INFO Content (from info.html) -->
-          <!-- 이미지 제거 후 명단 리스트만 남김 -->
-          <div>
-            <div id="info-details" class="info-list-container">
-              <!-- 첫 번째 섹션: 졸업전시위원 -->
-              <section class="info-section">
-                  <h3 class="info-title">졸업전시위원</h3>
-                  <div class="info-member-list">
-                      <p>김혜민</p> <p>박성욱</p> <p>박소현</p> <p>윤해주</p>
-                  </div>
-              </section>
+          <!-- [수정] 불필요한 div를 제거하고 info-list-container를 섹션의 자식으로 만듭니다. -->
+          <div id="info-details" class="info-list-container">
+            <!-- 첫 번째 섹션: 졸업전시위원 -->
+            <section class="info-section">
+                <h3 class="info-title">졸업전시위원</h3>
+                <div class="info-member-list">
+                    <p>김혜민</p> <p>박성욱</p> <p>박소현</p> <p>윤해주</p>
+                </div>
+            </section>
 
-              <!-- 두 번째 섹션: 파트별 명단 -->
-              <section class="info-section">
-                  <div class="info-grid">
-                      <!-- 웹 파트 -->
-                      <div class="info-list-item">
-                          <h3 class="info-title">웹</h3>
-                          <div class="info-member-list">
-                              <p>강민진</p> <p>박송희</p> <p>박시은</p> <p>장서연</p> <p>장영웅</p>
-                          </div>
-                      </div>
-                      <!-- 소형배너 파트 -->
-                      <div class="info-list-item">
-                          <h3 class="info-title">소형배너</h3>
-                          <div class="info-member-list">
-                              <p>서유정</p> <p>송예준</p> <p>이민준</p>
-                          </div>
-                      </div>
-                      <!-- 대형배너 파트 -->
-                      <div class="info-list-item">
-                          <h3 class="info-title">대형배너</h3>
-                          <div class="info-member-list">
-                              <p>권한별</p> <p>조예빈</p>
-                          </div>
-                      </div>
-                      <!-- 영상 파트 -->
-                      <div class="info-list-item">
-                          <h3 class="info-title">영상</h3>
-                          <div class="info-member-list">
-                              <p>고영인</p> <p>박성민</p> <p>이상훈</p>
-                          </div>
+            <!-- 두 번째 섹션: 파트별 명단 -->
+            <section class="info-section">
+                <div class="info-grid">
+                    <!-- 웹 파트 -->
+                    <div class="info-list-item">
+                        <h3 class="info-title">웹</h3>
+                        <div class="info-member-list">
+                            <p>강민진</p> <p>박송희</p> <p>박시은</p> <p>장서연</p> <p>장영웅</p>
                         </div>
-                  </div>
-              </section>
-            </div>
+                    </div>
+                    <!-- 소형배너 파트 -->
+                    <div class="info-list-item">
+                        <h3 class="info-title">소형배너</h3>
+                        <div class="info-member-list">
+                            <p>서유정</p> <p>송예준</p> <p>이민준</p>
+                        </div>
+                    </div>
+                    <!-- 대형배너 파트 -->
+                    <div class="info-list-item">
+                        <h3 class="info-title">대형배너</h3>
+                        <div class="info-member-list">
+                            <p>권한별</p> <p>조예빈</p>
+                        </div>
+                    </div>
+                    <!-- 영상 파트 -->
+                    <div class="info-list-item">
+                        <h3 class="info-title">영상</h3>
+                        <div class="info-member-list">
+                            <p>고영인</p> <p>박성민</p> <p>이상훈</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
           </div>
         </section>
       </main>
@@ -160,6 +158,8 @@
       // GNB를 동적으로 로드하고 현재 페이지에 'active' 클래스를 추가하는 스크립트
       document.addEventListener("DOMContentLoaded", function() {
         // 페이지 로드 시 스크롤을 최상단으로 강제 이동
+        // [수정] CSS 대신 JS에서 스크롤을 제어합니다.
+        document.body.style.overflow = 'hidden';
         window.scrollTo(0, 0);
 
         fetch("gnb.html")
@@ -175,37 +175,55 @@
                 link.classList.add("active");
               }
             });
+
+            // [수정] GNB 스크롤 이벤트를 다시 추가합니다.
+            const gnb = document.querySelector('.gnb');
+            if (gnb) {
+              window.addEventListener('scroll', () => {
+                // 10px 이상 스크롤되면 'scrolled' 클래스를 추가합니다.
+                if (window.scrollY > 10) {
+                  gnb.classList.add('scrolled');
+                } else {
+                  gnb.classList.remove('scrolled');
+                }
+              });
+            }
           });
 
         // ABOUT 섹션 GSAP 스크롤 애니메이션
         // GSAP에 ScrollTrigger 플러그인 등록
         gsap.registerPlugin(ScrollTrigger);
 
-        // GSAP 타임라인 생성
+        // [수정] ABOUT 섹션 펼침 효과 애니메이션
         let tl = gsap.timeline({
             scrollTrigger: {
-                trigger: ".animation-wrapper", // 애니메이션 기준 요소
-                start: "top 75%", // 래퍼의 상단이 뷰포트 75% 지점에 닿을 때 시작
-                toggleActions: "play none none none" // 뷰에 들어올 때 한 번만 재생
+                trigger: "#about", // ABOUT 섹션을 기준으로
+                start: "top top", // 섹션의 상단이 뷰포트 상단에 닿을 때 시작
+                end: "+=1500px", // 1500px 스크롤하는 동안 애니메이션을 진행하여 속도감 개선
+                pin: true, // 스크롤 동안 #about 섹션을 고정
+                scrub: 1, // 스크롤과 애니메이션을 부드럽게 동기화
                 // markers: true, // 디버깅용 마커 (필요시 주석 해제)
             }
         });
 
-        // 애니메이션 1: "왼쪽 선" -> "전체 이미지" (왼쪽에서 오른쪽으로)
-        // clip-path의 가로 값을 2%->100%로 변경
-        tl.to(".scroll-image", {
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            ease: "power1.in", // 요청하신 'ease in'
-            duration: 1 // 1초 동안 애니메이션 진행
-        });
-
-        // 애니메이션 2: 텍스트 페이드인 (추가)
-        // 이미지 애니메이션이 0.3초 진행된 시점에 시작
-        tl.to(".fade-in-text", {
+        // 1단계: "얇은 세로선" -> "긴 세로선" (세로로 길어짐)
+        tl.to(".animation-wrapper", {
+            height: "80vh",
+            ease: "none"
+        })
+        // 2단계: "긴 세로선" -> "펼쳐진 상자" (가로로 넓어짐)
+        .to(".animation-wrapper", {
+            width: "100%",
+            backgroundColor: "transparent", // 펼쳐진 후 배경색 투명하게
+            overflow: "visible", // 펼쳐진 후 내부 콘텐츠가 보이도록 설정
+            ease: "power1.inOut"
+        })
+        // 3단계: 이미지와 텍스트 나타나기
+        .to([".scroll-image", ".fade-in-text"], {
             opacity: 1,
-            ease: "power1.in",
-            duration: 0.7 // 0.3초부터 1초까지 (총 0.7초)
-        }, 0.3); // 타임라인의 0.3초 지점에서 시작
+            stagger: 0.2, // 이미지, 텍스트 순으로 0.2초 간격으로 나타남
+            ease: "power1.inOut"
+        }, "-=0.5"); // 2단계 애니메이션이 끝나기 0.5초 전에 시작
       });
     </script>
   </body>

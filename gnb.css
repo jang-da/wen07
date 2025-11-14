@@ -7,9 +7,9 @@
   background-color: rgba(0, 0, 0, 0.8); /* 반투명 검은색 배경으로 변경 */
   z-index: 1000; /* 다른 요소들 위에 오도록 설정 */
   box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
-  /* [수정] 경계선이 부드럽게 나타나도록 transition 추가 */
-  border-bottom: 1px solid transparent;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  /* 경계선 두께를 2px로 늘리고, 그림자 효과도 transition에 추가합니다. */
+  border-bottom: 1=0.5px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* GNB 내부 콘텐츠 컨테이너 */
@@ -52,6 +52,7 @@
 
 /* 스크롤 시 GNB 스타일 */
 .gnb.scrolled {
-  /* [수정] 스크롤 시 나타날 경계선 색상 */
-  border-bottom-color: rgba(255, 255, 255, 0.15);
+  /* 스크롤 시 흰색 경계선과 함께 은은한 그림자 효과를 추가합니다. */
+  border-bottom-color: #FFFFFF;
+  box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.2);
 }

@@ -111,17 +111,5 @@ gsap.set(["#panelTop", "#panelBottom"], { yPercent: 0 });
             if (typeof windowResized === 'function') {
                 windowResized();
             }
-            
-            // [수정] GNB 스크롤 이벤트를 이곳에서 추가합니다.
-            const gnb = document.querySelector('.gnb');
-            if (gnb) {
-              window.addEventListener('scroll', () => {
-                if (window.scrollY > 10) { // 10px 이상 스크롤되면
-                  gnb.classList.add('scrolled');
-                } else {
-                  gnb.classList.remove('scrolled');
-                }
-              });
-            }
         }
     }, lastAnimationStartTime);
