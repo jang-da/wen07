@@ -54,6 +54,12 @@ main {
   font-size: 100px; /* 폰트 크기를 100px로 설정 */ 
 }
 
+/* [수정] ABOUT 섹션이 스크롤 트리거에 도달하기 전까지 보이지 않도록 설정 */
+#about {
+  visibility: hidden;
+}
+
+
 /* INFO 제목과 리스트 사이 간격 조정 */
 #info h2 {
   margin-bottom: 110px;

@@ -162,6 +162,14 @@
         document.body.style.overflow = 'hidden';
         window.scrollTo(0, 0);
 
+        // [수정] 새로고침 시 스크롤 위치 복원 방지 및 강제 상단 이동
+        if (history.scrollRestoration) {
+          history.scrollRestoration = 'manual';
+        }
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        };
+
         fetch("gnb.html")
           .then(response => response.text())
           .then(data => {
@@ -198,11 +206,14 @@
         let tl = gsap.timeline({
             scrollTrigger: {
                 trigger: "#about", // ABOUT 섹션을 기준으로
-                start: "top top", // 섹션의 상단이 뷰포트 상단에 닿을 때 시작
-                end: "+=1500px", // 1500px 스크롤하는 동안 애니메이션을 진행하여 속도감 개선
-                pin: true, // 스크롤 동안 #about 섹션을 고정
+                start: "top top", 
+                end: "+=3000px", // [수정] 애니메이션 길이를 3000px로 늘려 INFO 섹션과 겹치지 않도록 함
+                pin: true, // #about 섹션 전체를 고정 (true는 trigger 요소를 고정하라는 의미)
                 scrub: 1, // 스크롤과 애니메이션을 부드럽게 동기화
                 // markers: true, // 디버깅용 마커 (필요시 주석 해제)
+                // [수정] 스크롤 트리거 영역에 들어올 때만 #about 섹션을 보이게 처리
+                onEnter: () => gsap.to("#about", {visibility: 'visible'}),
+                onLeaveBack: () => gsap.to("#about", {visibility: 'hidden'})
             }
         });
 
@@ -224,6 +235,9 @@
             stagger: 0.2, // 이미지, 텍스트 순으로 0.2초 간격으로 나타남
             ease: "power1.inOut"
         }, "-=0.5"); // 2단계 애니메이션이 끝나기 0.5초 전에 시작
+
+        // [수정] 모든 ScrollTrigger 인스턴스를 새로고침하여 위치를 재계산합니다.
+        ScrollTrigger.refresh();
       });
     </script>
   </body>
