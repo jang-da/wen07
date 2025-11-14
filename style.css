@@ -31,12 +31,21 @@ main {
 .container {
   min-height: 100vh; /* 각 섹션의 높이를 화면 높이에 맞춥니다. */
   display: flex; /* Flexbox 레이아웃을 사용하여 내부 콘텐츠를 정렬합니다. */
-  flex-direction: column;
+  flex-direction: column; /* 자식 요소를 세로로 정렬 */
+  align-items: center; /* [수정] 자식 요소를 수평 중앙 정렬합니다. */
   justify-content: center;
   padding: 20px;
   box-sizing: border-box;
   margin: 0 auto; /* 가로 중앙 정렬 */
 }
+
+/* [수정] #about 섹션에 애니메이션 시작 스타일 직접 적용 */
+#about { 
+  /* [수정] .container의 flex-direction: column을 덮어쓰고,
+     자식 요소를 가로/세로 중앙에 배치하도록 설정합니다. */
+  /* 자식인 .animation-wrapper가 margin: auto로 중앙 정렬하므로 flex 관련 속성 제거 */
+}
+
 
 /* 각 섹션의 제목 (h2) 중앙 정렬 */
 .container h2 {
@@ -46,47 +55,57 @@ main {
 }
 
 /* ABOUT, INFO 섹션 제목 특별 스타일 */
-#about h2, #info h2 {
-  font-size: 100px; /* 폰트 크기를 100px로 설정 */
-  text-align: left; /* 텍스트 왼쪽 정렬 */
-  /* 부모(.container)의 좌측 padding(20px) + 100px = 뷰포트 좌측에서 120px */
-  padding-left: 100px; 
-  font-size: 100px; /* 폰트 크기를 100px로 설정 */ 
-}
-
-/* [수정] ABOUT 섹션이 스크롤 트리거에 도달하기 전까지 보이지 않도록 설정 */
-#about {
-  visibility: hidden;
-}
-
-
 /* INFO 제목과 리스트 사이 간격 조정 */
-#info h2 {
-  margin-bottom: 110px;
+.info-container h2 {
+  margin-bottom: 110px; /* 제목과 내용 사이 간격 */
+} 
+
+/* [수정] INFO 섹션 상단에 여백을 추가하여 ABOUT 섹션과 겹치지 않도록 합니다. */
+#info {
+  /* .container의 align-items, justify-content를 덮어씁니다. */
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: 150vh; /* ABOUT 애니메이션이 끝날 충분한 공간 확보 */
 }
 
 
 
-/* About 섹션 애니메이션 래퍼 (기존 .about-content 대체) */
+/* [수정] About 섹션 애니메이션 래퍼 - 펼침 효과 제거 */
 .animation-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 50px; /* 이미지와 텍스트 사이 간격 */
-  width: 100%;
-  max-width: 1400px; /* 콘텐츠 최대 너비를 1400px로 설정 */
+  max-width: 1600px; /* [수정] 최종 너비를 GNB와 동일하게 1600px로 설정 */
   margin: 0 auto; /* 중앙 정렬 */
-  /* [수정] 펼침 효과를 위한 초기 스타일: 얇은 세로선 */
-  height: 30vh; /* 시작 높이 */
-  width: 4px; /* 시작 너비 */
-  background-color: #A8D5E2; /* 선 색상 */
-  overflow: hidden; /* 내부 콘텐츠 숨기기 */
+  padding: 0 40px; /* [수정] 좌우 패딩 40px 추가 */
+  box-sizing: border-box; /* [수정] 패딩을 너비에 포함 */
+}
+
+/* [수정] About 섹션 내부 콘텐츠를 감싸는 컨테이너 */
+.about-content-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  position: relative; /* h2의 absolute 위치 기준 */
 }
 
 /* About 섹션 이미지 래퍼 */
 .about-images-wrapper {
   flex-basis: 40%; /* 이미지 컨테이너 너비 */
-  overflow: hidden; /* clip-path 애니메이션을 위해 필수 */
+  height: 664px; /* [수정] 이미지 높이와 동일하게 설정 */
+  opacity: 0; /* [수정] 초기 숨김 - GSAP 개별 제어용 */
+}
+
+/* [수정] about-content-inner 내부의 h2 스타일 (예제 코드와 동일하게) */
+.about-content-inner h2 {
+  position: absolute;
+  top: -60px; /* 컨테이너 상단 바깥으로 이동 */
+  left: 40px; /* [수정] 패딩을 고려하여 왼쪽 위치 조정 */
+  font-size: 100px;
+  opacity: 0; /* 초기 숨김 */
 }
 
 /* About 섹션 애니메이션 이미지 */
@@ -94,13 +113,12 @@ main {
   width: 446px; /* 너비를 446px로 고정 */
   height: 664px; /* 높이를 664px로 고정 */
   display: block; /* 이미지 하단 여백 제거 */
-  /* [수정] 펼쳐진 후 나타나도록 초기 투명도 설정 */
-  opacity: 0; 
+  object-fit: cover; /* 이미지가 영역에 맞게 채워지도록 */
 }
 
 /* About 섹션 애니메이션 텍스트 */
 .fade-in-text {
-  opacity: 0; /* [수정] 펼쳐진 후 나타나도록 초기 투명도 설정 */
+  opacity: 0; /* 초기 숨김 */
   flex: 0 0 600px; /* 텍스트 영역 너비를 600px로 고정 */
   display: flex;
   flex-direction: column;
@@ -135,67 +153,60 @@ main {
   text-align: right;
 }
 
-/* --- [수정] INFO Section 2단 레이아웃 --- */
-.info-content-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* --- [수정] INFO 섹션 스타일을 이전 방식으로 복원 --- */
+.info-container {
   width: 100%;
-  max-width: 1400px; /* 전체 너비 제한 (ABOUT 섹션과 유사하게) */
-  gap: 20px; /* 이미지와 명단 사이 간격을 20px로 수정 */
-}
-
-
-
-/* --- New INFO Section Styles --- */
-.info-list-container {
-  width: 1400px; /* 너비를 1400px로 수정 */
-  margin-left: auto; /* 중앙 정렬 */
-  margin-right: auto; /* 중앙 정렬 */
+  max-width: 1600px; /* GNB와 동일한 최대 너비 (콘텐츠 너비 1520px) */
+  margin: 0 auto; /* [수정] 수평 중앙 정렬 */
+  padding: 0 40px; /* [수정] GNB와 동일한 좌우 패딩 */
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 내부 콘텐츠(섹션)들을 중앙 정렬 */
-  gap: 120px; /* 섹션 간 간격 */
+  align-items: flex-start;
+  gap: 100px;
 }
 
-.info-section {
-  width: 100%;
+.info-container h2 {
+  font-size: 100px;
+  color: #bcd7de;
+}
+
+.info-committee-section {
   display: flex;
   flex-direction: column;
-  gap: 60px; /* 제목과 명단 사이 간격을 60px로 설정 */
+  gap: 60px;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4개의 열이 공간을 균등하게 차지하도록 수정 */
-  justify-content: center; /* 그리드 자체를 중앙에 배치 */
-  gap: 20px; /* 열 사이의 간격을 190px로 설정 */
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  gap: 60px;
 }
 
 .info-list-item {
   display: flex;
-  flex-direction: column; /* 제목과 명단을 세로로 배치 */
-  gap: 60px; /* 제목과 명단 사이 간격을 60px로 설정 */
+  flex-direction: column;
+  gap: 60px;
 }
 
 .info-title {
-  font-size: 26px; /* 폰트 크기를 26px로 수정 */
-  font-weight: 600; /* semibold */
-  color: #A8D5E2;
+  font-family: "SourceCodePro", monospace;
+  font-size: 25px;
+  font-weight: 500;
+  color: #8dd7eb;
 }
 
 .info-member-list {
   display: flex;
-  flex-direction: column; /* [수정] 세로 정렬로 변경 */
-  gap: 0.5rem; /* 이름 사이 간격 */
+  flex-direction: column;
+  gap: 12px;
 }
 
 .info-member-list p {
-  font-size: 16px; /* 폰트 크기를 12px로 수정 */
-  color: rgba(168, 213, 226, 0.85); /* 이름 텍스트는 약간 연하게 */
-}
-
-/* Title Colors */
-.info-title {
-  color: #A8D5E2; /* 모든 타이틀 색상 통일 */
+  font-family: "SourceCodePro", monospace;
+  font-size: 25px;
+  font-weight: 400;
+  color: rgba(188, 215, 222, 0.6);
+  line-height: 160%;
 }

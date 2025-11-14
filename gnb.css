@@ -15,7 +15,7 @@
 /* GNB 내부 콘텐츠 컨테이너 */
 .gnb-inner {
   width: 100%;
-  max-width: 1600px; /* 최대 너비 1400px */
+  max-width: 1600px; /* [수정] 최대 너비를 1600px로 설정 */
   margin: 0 auto; /* 중앙 정렬 */
   padding: 10px 40px; /* 상하/좌우 여백 */
   display: flex;
